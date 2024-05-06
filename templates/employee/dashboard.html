@@ -1,0 +1,9 @@
+{% extends 'employee/base.html' %}
+
+{% block title %}
+	DashBoard
+{% endblock %}
+
+{% block content %}
+	<a href="{% url 'presence' %} " class="btn btn-light">{{ username }} Mark Attendance</a>
+{% endblock %}
