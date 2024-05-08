@@ -1,40 +1,79 @@
-from django.contrib.auth.models import User
 from django import forms
+from .models import Employee
+import re
 
-class RegistrationForm(forms.Form):
+class SignUpForm(forms.ModelForm):
+    DEPARTMENT_CHOICES = [
+        ('CS', 'Computer Science'),
+        ('IT', 'Information Technology'),
+        ('HR', 'Human Resources'),
+        ('Library', 'Library'),
+        ('Admission', 'Admission'),
+    ]
 
-    first_name = forms.CharField(label='First Name', min_length=3, max_length=50)
-    last_name = forms.CharField(label='Last Name', min_length=3, max_length=50)
-    username = forms.CharField(label='Username', min_length=3, max_length=50)
-    email = forms.EmailField(label='Email', min_length=3, max_length=50)
-    password = forms.CharField(label='Password', widget=forms.PasswordInput)
-    confirm_password = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
+    BLOOD_GROUP_CHOICES = [
+        ('A+', 'A+'),
+        ('A-', 'A-'),
+        ('B+', 'B+'),
+        ('B-', 'B-'),
+        ('AB+', 'AB+'),
+        ('AB-', 'AB-'),
+        ('O+', 'O+'),
+        ('O-', 'O-'),
+    ]
 
+    department = forms.ChoiceField(choices=DEPARTMENT_CHOICES)
+    blood_group = forms.ChoiceField(choices=BLOOD_GROUP_CHOICES)
+    confirm_password = forms.CharField(max_length=100, widget=forms.PasswordInput)
 
-    # name = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'placeholder': 'Enter your name'}))
-    # email = forms.EmailField(widget=forms.EmailInput(attrs={'placeholder': 'Enter your email'}))
-    # mobile = forms.CharField(max_length=15, widget=forms.TextInput(attrs={'placeholder': 'Enter your mobile number'}))
-    # DOB = forms.DateField(widget=forms.TextInput(attrs={'placeholder': 'YYYY-MM-DD', 'class': 'form-control', 'type': 'date'}), input_formats=['%Y-%m-%d'])
-    # bloodgroup = forms.ChoiceField(choices=[
-    #     ('A+', 'A+'),
-    #     ('A-', 'A-'),
-    #     ('B+', 'B+'),
-    #     ('B-', 'B-'),
-    #     ('O+', 'O+'),
-    #     ('O-', 'O-'),
-    #     ('AB+', 'AB+'),
-    #     ('AB-', 'AB-'),
-    # ], widget=forms.Select(attrs={'placeholder': 'Select your blood group'}))
-    # department = forms.ChoiceField(choices=[
-    #     ('IT', 'Information Technology'),
-    #     ('CS', 'Computer Science'),
-    #     ('ECE', 'Electronics and Communication Engineering'),
-    #     # Add more choices as needed
-    # ], widget=forms.Select(attrs={'placeholder': 'Select your department'}))
-    # password1 = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Enter your password'}))
-    # password2 = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Confirm your password'}))
+    class Meta:
+        model = Employee
+        fields = '__all__'
 
-class LoginForm(forms.Form):
-    email = forms.EmailField(label='Email')
-    password = forms.CharField(label='Password', widget=forms.PasswordInput)
+    def clean(self):
+        cleaned_data = super().clean()
+        errors = {}
 
+        name = cleaned_data.get('name')
+        if not name:
+            errors['name'] = "Name is required."
+        elif not re.match(r'^[a-zA-Z]+(?: [a-zA-Z]+)*$', name):
+            errors['name'] = "Name must contain only letters and spaces."
+
+        dob = cleaned_data.get('dob')
+        if not dob:
+            errors['dob'] = "Date of Birth is required."
+
+        age_years = cleaned_data.get('age_years')
+        if age_years and age_years < 18:
+            errors['age_years'] = "Employee age must be greater than 18."
+
+        mobile = cleaned_data.get('mobile')
+        if not mobile:
+            errors['mobile'] = "Mobile number is required."
+        elif not re.match(r'^[0-9]{10,14}$', mobile):
+            errors['mobile'] = "Invalid mobile number."
+
+        email = cleaned_data.get('email')
+        if not email:
+            errors['email'] = "Email is required."
+        elif not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
+            errors['email'] = "Invalid email address."
+
+        password = cleaned_data.get('password')
+        confirm_password = cleaned_data.get('confirm_password')
+        if not password:
+            errors['password'] = "Password is required."
+        elif len(password) < 8:
+            errors['password'] = "Password must be at least 8 characters long."
+        elif password != confirm_password:
+            errors['confirm_password'] = "Passwords do not match."
+
+        gender = cleaned_data.get('gender')
+        if gender not in ['male', 'female']:
+            errors['gender'] = "Invalid gender."
+
+        if errors:
+            raise forms.ValidationError(errors)
+
+        return cleaned_data

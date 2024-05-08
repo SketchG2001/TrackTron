@@ -1,19 +1,26 @@
+import re
+from datetime import datetime, timedelta
 from django.contrib import auth, messages
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
-from .forms import RegistrationForm
+from django.urls import reverse
+from .forms import SignUpForm
+
+from employee.models import Employee
 
 
 def home(request):
     return render(request, 'employee/home.html')
 
 
-def login(request):
+def login_view(request):
     if request.method == 'POST':
-        username = request.POST['email']
+        email = request.POST['email']
         password = request.POST['password']
-        user = auth.authenticate(username=username, password=password)
+        print(email)
+        print(password)
+        user = auth.authenticate(email=email, password=password)
         if user is not None:
             auth.login(request, user)
             return redirect('dashboard')
@@ -26,36 +33,35 @@ def login(request):
 
 def register(request):
     if request.method == 'POST':
-        form = RegistrationForm(request.POST)
+        print("post request")
+        form = SignUpForm(request.POST)
         if form.is_valid():
-            username = form.cleaned_data['username']
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
-            confirm_password = form.cleaned_data['confirm_password']
-            first_name = form.cleaned_data['first_name']
-            last_name = form.cleaned_data['last_name']
+            # Access form data directly from cleaned_data
+            print("form is valid")
+            name = form.cleaned_data.get('name')
+            department = form.cleaned_data.get('department')
+            blood_group = form.cleaned_data.get('blood_group')
+            dob = form.cleaned_data.get('dob')
+            age = form.cleaned_data.get('age_years')
+            mobile = form.cleaned_data.get('mobile')
+            email = form.cleaned_data.get('email')
+            password = form.cleaned_data.get('password')
+            gender = form.cleaned_data.get('gender')
 
-            if password == confirm_password:
-                if User.objects.filter(username=username).exists():
-                    messages.info(request, 'Username already taken')
-                    return redirect('register')
-                elif User.objects.filter(email=email).exists():
-                    messages.info(request, 'Email already exists')
-                    return redirect('register')
-                else:
-                    user = User.objects.create_user(username=username, email=email, password=password,
-                                                    first_name=first_name, last_name=last_name)
-                    user.save()
-                    messages.success(request, 'User registered successfully. Please log in.')
-                    return redirect('login')
-            else:
-                messages.error(request, "Password doesn't match")
-                return redirect('register')
+
+            print(name, department, blood_group, dob, mobile, email, password, gender,age)
+
+            # Save the form data
+            form.save()
+
+            # Redirect to a success page or URL
+            return redirect('login')  # Replace 'success_url' with your actual URL
         else:
-            messages.error(request, 'Invalid form submission. Please try again.')
-            return redirect('register')
+            print("Form is not valid")
+            print(form.errors)  # Print form errors for debugging
     else:
-        form = RegistrationForm()
+        form = SignUpForm()
+
     return render(request, 'employee/register.html', {'form': form})
 
 
