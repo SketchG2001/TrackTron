@@ -49,9 +49,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
+# AUTHENTICATION_BACKENDS = (
+#     'employee.backends.EmailOrUsernameModelBackend',
+#     'django.contrib.auth.backends.ModelBackend',
+# )
 ROOT_URLCONF = 'tracktron.urls'
-LOGIN_URL = '/login/'
+LOGIN_URL = 'login'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -70,6 +73,10 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'tracktron.wsgi.application'
+AUTHENTICATION_BACKENDS = [
+    'employee.backends.CustomUserAuthenticationBackend',
+    'django.contrib.auth.backends.ModelBackend',  # Default Django authentication backend
+]
 
 
 # Database
@@ -77,11 +84,25 @@ WSGI_APPLICATION = 'tracktron.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'OPTIONS': {
+            'sql_mode': 'traditional',
+        },
+        'NAME': 'myproj',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',  # Or the hostname of your MySQL server
+        'PORT': '3306',  # Default MySQL port
     }
 }
+AUTH_USER_MODEL = 'employee.Employee'
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators

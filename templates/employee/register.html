@@ -12,7 +12,7 @@
 			<div class = "col-md-6 offset-md-3">
 				<div class = "card bg-info">
 					<div class = "card-body">
-						<form method = "post" action = "{% url 'register' %}">
+						<form method = "post" action = "{% url 'register' %}" id="signup-form">
 							{% csrf_token %}
 
 							{% if form.errors %}
@@ -127,6 +127,7 @@
 									<div class = "error" style="color:red;">{{ form.gender.errors }}</div>
 								{% endif %}
 							</div>
+						<input type="hidden" name="username" id="username">
 							<div>
 								<button type = "submit"
 										class = "flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Sign Up
@@ -139,6 +140,27 @@
 		</div>
 	</div>
 	<script>
+	
+		 document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("signup-form");
+
+        form.addEventListener("submit", function (event) {
+            // Generate username using JavaScript
+            const nameInput = document.getElementById("name").value;
+            const dobInput = document.getElementById("dob").value;
+            const mobileInput = document.getElementById("mobile").value;
+
+            const firstName = nameInput.split(' ')[0].toLowerCase();
+            const dobYear = new Date(dobInput).getFullYear().toString().slice(-2);
+            const mobileLastTwo = mobileInput.slice(-2);
+
+            const username = firstName + dobYear + mobileLastTwo;
+            document.getElementById("username").value = username;
+            alert(username)
+
+        });
+    });
+		 
         document.addEventListener("DOMContentLoaded", function () {
             const form = document.querySelector("form");
 

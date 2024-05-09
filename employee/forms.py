@@ -1,5 +1,6 @@
 from django import forms
 from .models import Employee
+from django.contrib.auth.forms import AuthenticationForm
 import re
 
 class SignUpForm(forms.ModelForm):
@@ -77,3 +78,8 @@ class SignUpForm(forms.ModelForm):
             raise forms.ValidationError(errors)
 
         return cleaned_data
+
+class CustomAuthenticationForm(AuthenticationForm):
+    username = forms.CharField(max_length=254, label='Username')
+    password = forms.CharField(label='Password', widget=forms.PasswordInput)
+

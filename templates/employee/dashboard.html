@@ -1,9 +1,42 @@
 {% extends 'employee/base.html' %}
 
 {% block title %}
-	DashBoard
+    Dashboard
 {% endblock %}
 
 {% block content %}
-	<a href="{% url 'presence' %} " class="btn btn-light">{{ username }} Mark Attendance</a>
+    <div class="container mx-auto py-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="bg-white shadow-md rounded-lg p-6">
+                <h2 class="text-lg font-semibold mb-4">Employee Information</h2>
+                <p class="text-base"><span class="font-semibold">Employee ID:</span> {{ emp_id }}</p>
+                <p class="text-base"><span class="font-semibold">Name:</span> {{ name }}</p>
+	            <p class="text-base"><span class="font-semibold">Gender:</span> {{ gender }}</p>
+                <p class="text-base"><span class="font-semibold">Blood Group:</span> {{ blood_group }}</p>
+                <p class="text-base"><span class="font-semibold">Date of Birth:</span> {{ dob }}</p>
+                <p class="text-base"><span class="font-semibold">Age:</span> {{ age_years }}</p>
+            </div>
+            <div class="bg-white shadow-md rounded-lg p-6">
+                <h2 class="text-lg font-semibold mb-4">Contact Information</h2>
+                <p class="text-base"><span class="font-semibold">Department:</span> {{ department }}</p>
+                <p class="text-base"><span class="font-semibold">Mobile:</span> {{ mobile }}</p>
+                <p class="text-base"><span class="font-semibold">Mobile:</span> {{ email }}</p>
+                <p class="text-base"><span class="font-semibold">Last Login:</span> {{ last_login }}</p>
+            </div>
+            <div class="bg-white shadow-md rounded-lg p-6">
+                <h2 class="text-lg font-semibold mb-4">Profile Picture</h2>
+                <label for="profile_pic" class="cursor-pointer">
+                    {% if profile_pic %}
+                        <img src="{{ profile_pic.url }}" alt="Profile Picture" class="w-32 h-32 rounded-full mb-4">
+                    {% else %}
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-32 h-32 rounded-full bg-gray-200 mb-4" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 2a8 8 0 1 1 0 16 8 8 0 0 1 0-16zM9 9V6a1 1 0 1 1 2 0v3h3a1 1 0 1 1 0 2h-3v3a1 1 0 1 1-2 0v-3H6a1 1 0 1 1 0-2h3z"/>
+                        </svg>
+                    {% endif %}
+                    <input type="file" id="profile_pic" name="profile_pic" accept="image/*" class="hidden">
+                </label>
+                <a href="{% url 'presence' %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full inline-block">Mark Attendance</a>
+            </div>
+        </div>
+    </div>
 {% endblock %}

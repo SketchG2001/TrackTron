@@ -1,14 +1,9 @@
-import re
-from datetime import datetime, timedelta
-from django.contrib import auth, messages
-from django.contrib.auth.models import User
+
+from django.contrib.auth.hashers import make_password
 from django.shortcuts import render, redirect
-from django.contrib.auth import logout
-from django.urls import reverse
-from .forms import SignUpForm
-
-from employee.models import Employee
-
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
+from .forms import SignUpForm,CustomAuthenticationForm
 
 def home(request):
     return render(request, 'employee/home.html')
@@ -16,46 +11,39 @@ def home(request):
 
 def login_view(request):
     if request.method == 'POST':
-        email = request.POST['email']
-        password = request.POST['password']
-        print(email)
-        print(password)
-        user = auth.authenticate(email=email, password=password)
-        if user is not None:
-            auth.login(request, user)
-            return redirect('dashboard')
-        else:
-            messages.info(request, 'Invalid Credentials')
-            return redirect('login')
+        form = CustomAuthenticationForm(data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                if user.is_superuser:
+                    return redirect('hradmin')
+                else:
+                    return redirect('dashboard')
+            # Replace 'dashboard' with your actual URL name
+            else:
+                form.add_error(None, "Invalid username or password.")
     else:
-        return render(request, 'employee/login.html')
+        form = CustomAuthenticationForm()
+
+    return render(request, 'employee/login.html', {'form': form})
+
 
 
 def register(request):
     if request.method == 'POST':
-        print("post request")
         form = SignUpForm(request.POST)
         if form.is_valid():
-            # Access form data directly from cleaned_data
-            print("form is valid")
-            name = form.cleaned_data.get('name')
-            department = form.cleaned_data.get('department')
-            blood_group = form.cleaned_data.get('blood_group')
-            dob = form.cleaned_data.get('dob')
-            age = form.cleaned_data.get('age_years')
-            mobile = form.cleaned_data.get('mobile')
-            email = form.cleaned_data.get('email')
-            password = form.cleaned_data.get('password')
-            gender = form.cleaned_data.get('gender')
-
-
-            print(name, department, blood_group, dob, mobile, email, password, gender,age)
-
-            # Save the form data
-            form.save()
-
-            # Redirect to a success page or URL
-            return redirect('login')  # Replace 'success_url' with your actual URL
+            clear_pass = form.cleaned_data['password']
+            hashed_pass = make_password(clear_pass)
+            # Update the user's password with the hashed value
+            user = form.save(commit=False)
+            user.password = hashed_pass
+            user.save()
+            messages.success(request, 'You have been registered successfully.')
+            return redirect('login')  # Replace 'login' with your actual URL name
         else:
             print("Form is not valid")
             print(form.errors)  # Print form errors for debugging
