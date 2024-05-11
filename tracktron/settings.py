@@ -40,6 +40,16 @@ INSTALLED_APPS = [
     'employee.apps.EmployeeConfig',
 ]
 
+
+
+
+OTP_TWILIO_ACCOUNT_SID = 'ACb6666f5a89ead4e08ed8b56ddedfea48'
+OTP_TWILIO_AUTH_TOKEN = '8c3bb25af4032d8e8a4c58018c51c17b'
+OTP_TWILIO_FROM_NUMBER = '+13143102395'
+
+
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -77,7 +87,7 @@ AUTHENTICATION_BACKENDS = [
     'employee.backends.CustomUserAuthenticationBackend',
     'django.contrib.auth.backends.ModelBackend',  # Default Django authentication backend
 ]
-
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases

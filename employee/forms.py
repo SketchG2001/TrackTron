@@ -1,7 +1,8 @@
 from django import forms
-from .models import Employee
+from .models import Employee, LeaveRequest
 from django.contrib.auth.forms import AuthenticationForm
 import re
+
 
 class SignUpForm(forms.ModelForm):
     DEPARTMENT_CHOICES = [
@@ -79,7 +80,13 @@ class SignUpForm(forms.ModelForm):
 
         return cleaned_data
 
+
 class CustomAuthenticationForm(AuthenticationForm):
     username = forms.CharField(max_length=254, label='Username')
     password = forms.CharField(label='Password', widget=forms.PasswordInput)
 
+
+class LeaveRequestForm(forms.ModelForm):
+    class Meta:
+        model = LeaveRequest
+        fields = ['leave_type', 'start_date', 'end_date', 'reason']

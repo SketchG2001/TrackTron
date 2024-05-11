@@ -6,6 +6,17 @@
 {% endblock %}
 
 {% block content %}
+	<!-- Display messages in your template -->
+{% if messages %}
+    <div class="alert alert-success">
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
     <div class="container mt-4">
         <h1 class="text-center text-xl font-bold mb-4">Employee List</h1>
         <div class="table-responsive">
@@ -23,6 +34,7 @@
                         <th class="bg-gray-800 text-white">Age</th>
                         <th class="bg-gray-800 text-white">Mobile</th>
                         <th class="bg-gray-800 text-white">Gender</th>
+                        <th class="bg-gray-800 text-white">Delete</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -36,13 +48,39 @@
                             <td>{{ employee.department }}</td>
                             <td>{{ employee.blood_group }}</td>
                             <td>{{ employee.dob }}</td>
-                            <td>{{ employee.age }}</td>
+                            <td>{{ employee.age_years }}</td>
                             <td>{{ employee.mobile }}</td>
                             <td>{{ employee.gender }}</td>
+                            <td>
+                                    <div class="btn-group" role="group">
+                                        <a href="{% url 'delete_emp' employee.id %}" class="btn btn-primary">Delete</a>
+                                    </div>
+                                </td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
+	
+	
+	
+	
+	<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 16 16"
+  width="35"
+  height="35"
+  fill="currentColor"
+>
+  <!-- Background circle -->
+  <circle cx="8" cy="8" r="7" fill="#f5f5f5" stroke="#ccc" stroke-width="1" />
+
+  <!-- Calendar icon -->
+  <rect x="6" y="4" width="4" height="4" fill="#007bff" />
+  <rect x="5" y="7" width="6" height="1" fill="#007bff" />
+  <rect x="7" y="9" width="2" height="2" fill="#007bff" />
+  <rect x="4" y="11" width="8" height="1" fill="#007bff" />
+</svg>
+
 {% endblock %}

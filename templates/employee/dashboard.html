@@ -1,42 +1,150 @@
 {% extends 'employee/base.html' %}
 
 {% block title %}
-    Dashboard
+	Dashboard
+{% endblock %}
+
+{% block extra_head %}
+	<!-- Include Tailwind CSS -->
+	<link href = "https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel = "stylesheet">
 {% endblock %}
 
 {% block content %}
-    <div class="container mx-auto py-8">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div class="bg-white shadow-md rounded-lg p-6">
-                <h2 class="text-lg font-semibold mb-4">Employee Information</h2>
-                <p class="text-base"><span class="font-semibold">Employee ID:</span> {{ emp_id }}</p>
-                <p class="text-base"><span class="font-semibold">Name:</span> {{ name }}</p>
-	            <p class="text-base"><span class="font-semibold">Gender:</span> {{ gender }}</p>
-                <p class="text-base"><span class="font-semibold">Blood Group:</span> {{ blood_group }}</p>
-                <p class="text-base"><span class="font-semibold">Date of Birth:</span> {{ dob }}</p>
-                <p class="text-base"><span class="font-semibold">Age:</span> {{ age_years }}</p>
-            </div>
-            <div class="bg-white shadow-md rounded-lg p-6">
-                <h2 class="text-lg font-semibold mb-4">Contact Information</h2>
-                <p class="text-base"><span class="font-semibold">Department:</span> {{ department }}</p>
-                <p class="text-base"><span class="font-semibold">Mobile:</span> {{ mobile }}</p>
-                <p class="text-base"><span class="font-semibold">Mobile:</span> {{ email }}</p>
-                <p class="text-base"><span class="font-semibold">Last Login:</span> {{ last_login }}</p>
-            </div>
-            <div class="bg-white shadow-md rounded-lg p-6">
-                <h2 class="text-lg font-semibold mb-4">Profile Picture</h2>
-                <label for="profile_pic" class="cursor-pointer">
-                    {% if profile_pic %}
-                        <img src="{{ profile_pic.url }}" alt="Profile Picture" class="w-32 h-32 rounded-full mb-4">
-                    {% else %}
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-32 h-32 rounded-full bg-gray-200 mb-4" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 2a8 8 0 1 1 0 16 8 8 0 0 1 0-16zM9 9V6a1 1 0 1 1 2 0v3h3a1 1 0 1 1 0 2h-3v3a1 1 0 1 1-2 0v-3H6a1 1 0 1 1 0-2h3z"/>
-                        </svg>
-                    {% endif %}
-                    <input type="file" id="profile_pic" name="profile_pic" accept="image/*" class="hidden">
-                </label>
-                <a href="{% url 'presence' %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full inline-block">Mark Attendance</a>
-            </div>
+	<!-- Display messages -->
+	<style>
+        .alert-error {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        
+        .status-approved {
+            color: #155724;
+            background-color: #d4edda;
+        }
+
+        .status-pending {
+            color: #856404;
+            background-color: #fff3cd;
+        }
+
+        .status-rejected {
+            color: #721c24;
+            background-color: #f8d7da;
+        }
+                .status-approved {
+            --tw-bg-opacity: 50%;
+            background-color: #d4edda; /* Light green */
+        }
+
+        .status-pending {
+            --tw-bg-opacity: 50%;
+            background-color: #fff3cd; /* Light yellow */
+        }
+
+        .status-rejected {
+            --tw-bg-opacity: 50%;
+            background-color: #f8d7da; /* Light red */
+        }
+	</style>
+ {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'error' %}
+                <div class="alert alert-danger">
+                    {{ message }}
+                </div>
+            {% elif message.tags == 'success' %}
+                <div class="alert alert-success">
+                    {{ message }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+	<main role = "main" class = "container mx-auto py-8">
+		<div class = "bg-white shadow-md rounded-lg p-6">
+			<h2 class = "text-lg font-semibold mb-4">Employee Information</h2>
+			<div class = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+				<!-- Employee Information -->
+				<div>
+					<p><span class = "font-semibold">Employee ID:</span> {{ user.id }}</p>
+					<p><span class = "font-semibold">Name:</span> {{ user.name }}</p>
+					<p><span class = "font-semibold">Gender:</span> {{ user.gender }}</p>
+					<p><span class = "font-semibold">Blood Group:</span> {{ user.blood_group }}</p>
+				</div>
+
+				<!-- Contact Information -->
+				<div>
+					<p><span class = "font-semibold">Department:</span> {{ user.department }}</p>
+					<p><span class = "font-semibold">Mobile:</span> {{ user.mobile }}</p>
+					<p><span class = "font-semibold">Email:</span> {{ user.email }}</p>
+					<p><span class = "font-semibold">Last Login:</span> {{ user.last_login }}</p>
+				</div>
+
+				<!-- Profile Picture -->
+				<div class = "flex flex-col items-center">
+					<label for = "profile_pic" class = "cursor-pointer">
+						{% if profile_pic %}
+							<img src = "{{ profile_pic.url }}" alt = "Profile Picture"
+									class = "w-32 h-32 rounded-full mb-2">
+						{% else %}
+							<svg xmlns = "http://www.w3.org/2000/svg" class = "w-32 h-32 rounded-full bg-gray-200 mb-2"
+									viewBox = "0 0 20 20" fill = "currentColor">
+								<path fill-rule = "evenodd"
+										d = "M10 2a8 8 0 1 1 0 16 8 8 0 0 1 0-16zM9 9V6a1 1 0 1 1 2 0v3h3a1 1 0 1 1 0 2h-3v3a1 1 0 1 1-2 0v-3H6a1 1 0 1 1 0-2h3z"/>
+							</svg>
+						{% endif %}
+						<input type = "file" id = "profile_pic" name = "profile_pic" accept = "image/*"
+								class = "hidden">
+						<span class = "text-blue-500 hover:text-blue-700">Change Profile Picture</span>
+					</label>
+					<a href = "{% url 'presence' %}"
+							class = "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mt-4">Mark Attendance</a>
+				</div>
+			</div>
+		</div>
+
+		<hr class = "my-8">
+
+		<!-- Leave Requests Section -->
+		 <div class="bg-white shadow-md rounded-lg p-6">
+            <h2 class="text-lg font-semibold mb-4">Leave Requests</h2>
+            {% if leave_requests %}
+                <div class="overflow-x-auto">
+                    <table class="table-auto w-full border-collapse table-dark table-hover">
+                        <thead>
+                            <tr>
+                                <th class="px-4 py-2 border">Leave Type</th>
+                                <th class="px-4 py-2 border">Start Date</th>
+                                <th class="px-4 py-2 border">End Date</th>
+                                <th class="px-4 py-2 border">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for request in leave_requests %}
+                                <tr
+                                    class="
+                                        {% if request.status == 'approved' %}
+                                            status-approved
+                                        {% elif request.status == 'pending' %}
+                                            status-pending
+                                        {% elif request.status == 'rejected' %}
+                                            status-rejected
+                                        {% endif %}
+                                        px-4 py-2 border
+                                    "
+                                >
+                                    <td class="px-4 py-2">{{ request.get_leave_type_display }}</td>
+                                    <td class="px-4 py-2">{{ request.start_date }}</td>
+                                    <td class="px-4 py-2">{{ request.end_date }}</td>
+                                    <td class="px-4 py-2">{{ request.status|capfirst }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p>No leave requests found.</p>
+            {% endif %}
         </div>
-    </div>
+	</main>
 {% endblock %}

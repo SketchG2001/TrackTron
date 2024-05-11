@@ -1,0 +1,58 @@
+{% extends 'employee/hrbase.html' %}
+{% load static %}
+
+{% block title %}
+	All Leave Request
+{% endblock %}
+
+{% block content %}
+	<div class = "container mx-auto px-4 py-8">
+		<h1 class = "text-3xl font-bold mt-8 mb-4">Pending Leave Requests</h1>
+		<div class = "overflow-x-auto">
+			<table class = "min-w-full table-auto bg-white border border-gray-200 rounded shadow-md">
+				<thead class = "bg-gray-50">
+				<tr>
+					<th class = "px-4 py-2 text-left text-sm font-medium text-gray-600 uppercase">Employee</th>
+					<th class = "px-4 py-2 text-left text-sm font-medium text-gray-600 uppercase">Leave Type</th>
+					<th class = "px-4 py-2 text-left text-sm font-medium text-gray-600 uppercase">Start Date</th>
+					<th class = "px-4 py-2 text-left text-sm font-medium text-gray-600 uppercase">End Date</th>
+					<th class = "px-4 py-2 text-left text-sm font-medium text-gray-600 uppercase">Reason</th>
+					<th class = "px-4 py-2 text-left text-sm font-medium text-gray-600 uppercase">Action</th>
+				</tr>
+				</thead>
+				<tbody>
+				{% for request in pending_requests %}
+					<tr class = "hover:bg-gray-100 transition-colors duration-200">
+						<td class = "border px-4 py-2">{{ request.employee.name }}</td>
+						<td class = "border px-4 py-2">{{ request.get_leave_type_display }}</td>
+						<td class = "border px-4 py-2">{{ request.start_date }}</td>
+						<td class = "border px-4 py-2">{{ request.end_date }}</td>
+						<td class = "border px-4 py-2">{{ request.reason }}</td>
+						<td class = "border px-4 py-2">
+							<div class = "btn-group" role = "group">
+								<a href = "{% url 'approve_leave' request.id %}"
+										class = "btn btn-success btn-sm">Approve</a>
+							</div>
+							<div class = "btn-group" role = "group">
+								<a href = "{% url 'reject_leave' request.id %}"
+										class = "btn btn-danger btn-sm">Reject</a>
+							</div>
+						</td>
+					</tr>
+				{% empty %}
+					<tr>
+						<td colspan = "6" class = "border px-4 py-2 text-center">No pending leave requests.</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+{% endblock %}
+
+<style>
+    /* CSS for Hover Effect */
+    .hover\:bg-gray-100:hover {
+        background-color: #f3f4f6; /* Light gray background on hover */
+    }
+</style>
