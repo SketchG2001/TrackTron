@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 from .dashboard import dashboard
 from .presence import presence
-from .reports import reports
+from .reports import reports,all_employees,download_reports_csv
 from .leave_req import leave_request_create
 from .profile import profile
 from .hradmin import (hradmin,new_employee,approve_employee,
@@ -28,5 +28,7 @@ urlpatterns = [
     path('view_leave_requests/', view_leave_requests, name='view_leave_requests'),
     path('approve_leave/<int:request_id>/', approve_leave, name='approve_leave'),
     path('reject_leave/<int:request_id>/', reject_leave, name='reject_leave'),
+    path('all_employees', all_employees, name='employee_reports'),
+    path('download-reports-csv/', download_reports_csv, name='download_reports_csv'),
 
 ]

@@ -1,8 +1,73 @@
 {% extends 'employee/base.html' %}
 
 {% block title %}
-	View Reports
+    Reports
 {% endblock %}
+
 {% block content %}
-	<h1>View Employee Reports</h1>
+<div class="container mx-auto mt-8">
+    <h2 class="text-2xl mb-4">Attendance Reports for {{ username }}</h2>
+    {% if attendance_records %}
+    <div class="overflow-x-auto">
+        <table class="table-auto w-full border-collapse ">
+            <thead>
+                <tr>
+                    <th class="px-4 py-2 border">Date</th>
+                    <th class="px-4 py-2 border">Time</th>
+                    <th class="px-4 py-2 border">Location</th>
+                    <th class="px-4 py-2 border">Status</th>
+                    <th class="px-4 py-2 border">Comments</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in attendance_records %}
+                <tr class="{% if record.status == 'present' %} bg-success
+                            {% elif record.status == 'absent' %} bg-danger
+                            {% elif record.status == 'late' %} bg-warning
+                            {% endif %} px-4 py-2 border">
+                    <td class="px-4 py-2">{{ record.date }}</td>
+                    <td class="px-4 py-2">{{ record.time }}</td>
+                    <td class="px-4 py-2">{{ record.location }}</td>
+                    <td class="px-4 py-2">{{ record.status }}</td>
+                    <td class="px-4 py-2">{{ record.comments }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p>No attendance records found for {{ username }}</p>
+    {% endif %}
+</div>
+	<hr>
+	<div class="container mt-4">
+        <div class="row">
+            <div class="col">
+                <h3 class="text-center  mb-4"><strong>Attendance Summary for Current Month</strong></h3>
+            </div>
+        </div>
+
+        <table class="table-auto w-full border-collapse">
+            <thead>
+                <tr>
+                    <th class="px-4 py-2 border">Status</th>
+                    <th class="px-4 py-2 border">Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="bg-success">Present</td>
+                    <td class="bg-success">{{ present_count }}</td>
+                </tr>
+                <tr>
+                    <td class="bg-danger">Absent</td>
+                    <td class="bg-danger">{{ absent_count }}</td>
+                </tr>
+                <tr>
+                    <td class="bg-warning">Late</td>
+                    <td class="bg-warning">{{ late_count }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

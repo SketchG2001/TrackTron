@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from datetime import datetime
 from django.utils import timezone
+
+
 class Employee(AbstractUser):
     name = models.CharField(max_length=30, null=False, blank=False)
     department = models.CharField(max_length=100, null=False, blank=False)
@@ -28,6 +30,7 @@ class Employee(AbstractUser):
 
         super().save(*args, **kwargs)
 
+
 class LeaveRequest(models.Model):
     LEAVE_TYPES = [
         ('annual', 'Annual Leave'),
@@ -49,17 +52,17 @@ class LeaveRequest(models.Model):
 
 
 class Attendance(models.Model):
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, blank=False, null=False)
     date = models.DateField()
     time = models.TimeField()
-    location = models.CharField(max_length=255)
+    location = models.BooleanField(blank=False, null=False)
     STATUS_CHOICES = [
         ('present', 'Present'),
         ('absent', 'Absent'),
         ('late', 'Late'),
     ]
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
-    comments = models.TextField(blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, blank=False, null=False)
+    comments = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return f"{self.employee.username} - {self.date} - {self.time}"
