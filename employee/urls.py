@@ -1,19 +1,25 @@
 from django.urls import path
 from . import views
-from .dashboard import dashboard
+from .dashboard import dashboard, profile_picture
 from .presence import presence
-from .reports import reports,all_employees,download_reports_csv
+from .reports import reports, all_employees, download_reports_csv
 from .leave_req import leave_request_create
 from .profile import profile
-from .hradmin import (hradmin,new_employee,approve_employee,
-                      reject_employee,new_emp_count,delete_emp,
-                      view_leave_requests,approve_leave,reject_leave)
+from .hradmin import (hradmin, new_employee, approve_employee,
+                      reject_employee, new_emp_count, delete_emp,
+                      view_leave_requests, approve_leave, reject_leave)
+from .password_change import change_password
+from django.contrib.auth import views as auth_views
+from .verify_otp import verify_otp_and_reset_password, new_password
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.home, name='home'),
     path('login', views.login_view, name='login'),
     path('register', views.register, name='register'),
     path('dashboard/', dashboard, name='dashboard'),
+    path('profile_picture/', profile_picture, name='profile_picture'),
     path('logout', views.logout_view, name='logout'),
     path('presence', presence, name='presence'),
     path('reports', reports, name='reports'),
@@ -30,5 +36,11 @@ urlpatterns = [
     path('reject_leave/<int:request_id>/', reject_leave, name='reject_leave'),
     path('all_employees', all_employees, name='employee_reports'),
     path('download-reports-csv/', download_reports_csv, name='download_reports_csv'),
-
+    path('password_change/', change_password, name='password_change'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('password_reset/verify/<uidb64>/<token>/', verify_otp_and_reset_password,
+         name='verify_otp_and_reset_password'),
+    path('new_password/', new_password, name='new_password'),
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

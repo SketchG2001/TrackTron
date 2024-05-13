@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.utils.timezone import datetime
@@ -7,6 +7,7 @@ from employee.models import Attendance
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 import csv
+from .models import Employee
 
 
 @login_required
@@ -72,10 +73,20 @@ def all_employees(request):
                     date__year=requested_year,
                     date__month=requested_month
                 )
+                attendance_counts = reports.values('employee_id', 'status').annotate(count=Count('status'))
+                employee_attendance = {}
+                for count in attendance_counts:
+                    employee_id = count['employee_id']
+                    status = count['status']
+                    count_value = count['count']
+                    if employee_id not in employee_attendance:
+                        employee_attendance[employee_id] = {'absent': 0, 'late': 0, 'present': 0, 'on_leave': 0}
+                    employee_attendance[employee_id][status] = count_value
 
                 if reports.exists():
                     # Render the reports template with the loaded reports
-                    html_response = render_to_string('hradmin/reports_partial.html', {'reports': reports})
+                    html_response = render_to_string('hradmin/reports_partial.html',
+                                                     {'reports': reports, 'employee_attendance': employee_attendance})
                     return HttpResponse(html_response)
                 else:
                     return HttpResponse('No data available for this month.')
@@ -95,12 +106,11 @@ def all_employees(request):
         return render(request, 'hradmin/employee_reports.html', {'default_reports': default_reports})
 
 
-
-
 @login_required
 def download_reports_csv(request):
     if not request.user.is_superuser:
         return redirect('logout')
+
     # Get month and year parameters from the request
     requested_month = request.GET.get('month')
     requested_year = request.GET.get('year')
@@ -118,6 +128,17 @@ def download_reports_csv(request):
         date__month=requested_month
     ).order_by('employee_id')
 
+    # Calculate attendance counts by employee and status
+    attendance_counts = reports.values('employee_id', 'status').annotate(count=Count('status'))
+    employee_attendance = {}
+    for count in attendance_counts:
+        employee_id = count['employee_id']
+        status = count['status']
+        count_value = count['count']
+        if employee_id not in employee_attendance:
+            employee_attendance[employee_id] = {'absent': 0, 'late': 0, 'present': 0, 'on_leave': 0}
+        employee_attendance[employee_id][status] = count_value
+
     # Prepare response as CSV file
     response = HttpResponse(content_type='text/csv')
     filename = f"employee_reports_{requested_year}_{requested_month}.csv"
@@ -126,10 +147,10 @@ def download_reports_csv(request):
     # Create CSV writer
     writer = csv.writer(response)
 
-    # Write header row
+    # Write header row for individual attendance records
     writer.writerow(['Employee Name', 'Employee ID', 'Date', 'Time', 'Status', 'Comments'])
 
-    # Write data rows
+    # Write data rows for individual attendance records
     for report in reports:
         writer.writerow([
             report.employee.name,
@@ -138,6 +159,24 @@ def download_reports_csv(request):
             report.time,
             report.status,
             report.comments
+        ])
+
+    # Write a blank row to separate individual records and summary table
+    writer.writerow([])
+
+    # Write header row for attendance summary
+    writer.writerow(['Employee Name', 'Employee ID', 'Absent', 'Late', 'Present', 'on_leave'])
+
+    # Write data rows for attendance summary
+    for employee_id, status_counts in employee_attendance.items():
+        employee_name = Employee.objects.get(id=employee_id).name
+        writer.writerow([
+            employee_name,
+            employee_id,
+            status_counts['absent'],
+            status_counts['late'],
+            status_counts['present'],
+            status_counts['on_leave'],
         ])
 
     return response

@@ -13,6 +13,7 @@ class Employee(AbstractUser):
     mobile = models.CharField(max_length=14, unique=True, null=False, blank=False)
     gender = models.CharField(max_length=10, null=False, blank=False)
     date_joined = models.DateTimeField(null=True, blank=True)
+    profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
 
     # is_staff = models.BooleanField(default=True)  # Set default value for is_staff
     # is_active = models.BooleanField(default=True)  # Set default value for is_active
@@ -59,10 +60,11 @@ class Attendance(models.Model):
     STATUS_CHOICES = [
         ('present', 'Present'),
         ('absent', 'Absent'),
-        ('late', 'Late'),
+        ('late', 'late'),
     ]
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, blank=False, null=False)
     comments = models.TextField(blank=True, null=True)
+    on_leave = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.employee.username} - {self.date} - {self.time}"

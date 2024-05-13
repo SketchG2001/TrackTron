@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -53,6 +53,8 @@ MIDDLEWARE = [
 #     'employee.backends.EmailOrUsernameModelBackend',
 #     'django.contrib.auth.backends.ModelBackend',
 # )
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 ROOT_URLCONF = 'tracktron.urls'
 LOGIN_URL = 'login'
 TEMPLATES = [
@@ -79,8 +81,13 @@ AUTHENTICATION_BACKENDS = [
 ]
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587  # or the appropriate port number
+EMAIL_USE_TLS = True  # or False depending on your provider
+EMAIL_HOST_USER = 'testingsketch@gmail.com'
+EMAIL_HOST_PASSWORD = 'bplf oskl jrgw joqx'
+
 
 DATABASES = {
     'default': {
@@ -128,7 +135,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 

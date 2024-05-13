@@ -74,7 +74,7 @@
 							<div class = "md-3">
 								<label for = "age">age</label>
 								<input name = "age_years" placeholder="age" type = "number" id = "age" class = "form-control"
-										value = "{{ form.dob.value }}">
+										readonly>
 								{% if form.dob.errors %}
 									<div class = "error" style="color:red;">{{ form.dob.errors }}</div>
 								{% endif %}
@@ -161,6 +161,27 @@
         });
     });
 		 
+         document.addEventListener("DOMContentLoaded", function () {
+            const dobInput = document.getElementById("dob");
+            const ageInput = document.getElementById("age");
+
+            dobInput.addEventListener("change", function () {
+                const dobValue = dobInput.value;
+                const dobDate = new Date(dobValue);
+                const today = new Date();
+                let age = today.getFullYear() - dobDate.getFullYear();
+                const monthDiff = today.getMonth() - dobDate.getMonth();
+
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dobDate.getDate())) {
+                    age--;
+                }
+
+                ageInput.value = age;
+            });
+        });
+         
+         
+         
         document.addEventListener("DOMContentLoaded", function () {
             const form = document.querySelector("form");
 
@@ -218,7 +239,6 @@
                     dobInput.focus();
                     return false;
                 }
-
                 // Validate mobile number
                 const mobileInput = document.getElementById("mobile");
                 const mobileRegex = /^\d{10}$/;

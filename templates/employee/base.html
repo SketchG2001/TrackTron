@@ -35,12 +35,36 @@
         {% endif %}
     </div>
 </nav>
+<div class="flex items-center justify-end px-4 py-2">
+    <div id="liveTime"></div>
+</div>
 {% block content %}
 
 {% endblock %}
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+	// Function to update the live time
+function updateLiveTime() {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const seconds = now.getSeconds().toString().padStart(2, '0');
+    const currentTime = `${hours}:${minutes}:${seconds}`;
+
+    // Update the HTML element with the live time
+    const liveTimeElement = document.getElementById('liveTime');
+    liveTimeElement.textContent = `${currentTime}`;
+}
+
+// Update the live time initially when the page loads
+updateLiveTime();
+
+// Update the live time every second (1000 milliseconds)
+setInterval(updateLiveTime, 1000);
+
+</script>
 <footer class="bg-gray-900 text-white py-4 text-center mt-5">
     <p>&copy; 2024 TrackTron. All rights reserved.</p>
 </footer>

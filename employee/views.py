@@ -1,9 +1,10 @@
-
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .forms import SignUpForm,CustomAuthenticationForm
+from .forms import SignUpForm, CustomAuthenticationForm
+from .hradmin import send_email
+
 
 def home(request):
     return render(request, 'employee/home.html')
@@ -19,6 +20,8 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 if user.is_superuser:
+                    messages.warning(request,
+                                     'You have been logged in as an admin successfully. Please remember to change your password every 30 days.')
                     return redirect('hradmin')
                 else:
                     return redirect('dashboard')
@@ -31,7 +34,6 @@ def login_view(request):
     return render(request, 'employee/login.html', {'form': form})
 
 
-
 def register(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -42,7 +44,9 @@ def register(request):
             user = form.save(commit=False)
             user.password = hashed_pass
             user.save()
-            messages.success(request, 'You have been registered successfully.')
+            send_email(user, 'signUp_success', 'Registration Successful - Account Pending Approval')
+            messages.success(request,
+                             'You have been registered successfully. Please wait for your account to be approved. You will receive an email from us once your account has been approved')
             return redirect('login')  # Replace 'login' with your actual URL name
         else:
             print("Form is not valid")

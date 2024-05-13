@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Successful</title>
+    <style>
+        /* Email body styles */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9f9f9;
+            padding: 20px;
+        }
+
+        /* Email container styles */
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header styles */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Content styles */
+        .content {
+            margin-bottom: 20px;
+        }
+
+        /* Button styles */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h2 style="color: #007bff;">Registration Successful</h2>
+        </div>
+        <div class="content">
+            <p>Hello {{ user.name }},</p>
+            <p>Thank you for registering with us. Your account with username <strong>{{ user.username }}</strong> has been successfully created.</p>
+            <p>Your account is currently pending approval. Once approved, you will receive another email confirming access to our platform.</p>
+            <p>We appreciate your patience.</p>
+        </div>
+        <div class="footer">
+            <p>Best regards,<br>TrackTron Team</p>
+        </div>
+    </div>
+</body>
+
+</html>

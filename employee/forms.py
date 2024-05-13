@@ -90,3 +90,13 @@ class LeaveRequestForm(forms.ModelForm):
     class Meta:
         model = LeaveRequest
         fields = ['leave_type', 'start_date', 'end_date', 'reason']
+class OTPVerificationForm(forms.Form):
+    otp = forms.CharField(label='Enter OTP', max_length=6, widget=forms.TextInput(attrs={'autocomplete': 'off'}))
+
+
+class NewPasswordForm(forms.Form):
+    new_password = forms.CharField(label='New Password', widget=forms.PasswordInput)
+    confirm_new_password = forms.CharField(label='Confirm New Password', widget=forms.PasswordInput)
+
+class ProfilePictureForm(forms.Form):
+    profile_pic = forms.ImageField()

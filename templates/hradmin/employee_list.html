@@ -1,86 +1,137 @@
-	{% extends 'employee/hrbase.html' %}
+{% extends 'employee/hrbase.html' %}
 
 
 {% block title %}
-    Admin View
+	Admin View
 {% endblock %}
 
 {% block content %}
 	<!-- Display messages in your template -->
-{% if messages %}
-    <div class="alert alert-success">
-        <ul>
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-{% endif %}
+	<style>
+        /* Define blinking animation */
+        @keyframes blink {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
 
-    <div class="container mt-4">
-        <h1 class="text-center text-xl font-bold mb-4">Employee List</h1>
-        <div class="table-responsive">
-            <table class="table table-dark table-hover">
-                <thead>
-                    <tr>
-                        <th class="bg-gray-800 text-white">Name</th>
-                        <th class="bg-gray-800 text-white">Username</th>
-                        <th class="bg-gray-800 text-white">Email</th>
-                        <th class="bg-gray-800 text-white">Is Staff</th>
-                        <th class="bg-gray-800 text-white">Is Active</th>
-                        <th class="bg-gray-800 text-white">Department</th>
-                        <th class="bg-gray-800 text-white">Blood Group</th>
-                        <th class="bg-gray-800 text-white">Date of Birth</th>
-                        <th class="bg-gray-800 text-white">Age</th>
-                        <th class="bg-gray-800 text-white">Mobile</th>
-                        <th class="bg-gray-800 text-white">Gender</th>
-                        <th class="bg-gray-800 text-white">Delete</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for employee in employees %}
-                        <tr>
-                            <td>{{ employee.name }}</td>
-                            <td>{{ employee.username }}</td>
-                            <td>{{ employee.email }}</td>
-                            <td>{{ employee.is_staff }}</td>
-                            <td>{{ employee.is_active }}</td>
-                            <td>{{ employee.department }}</td>
-                            <td>{{ employee.blood_group }}</td>
-                            <td>{{ employee.dob }}</td>
-                            <td>{{ employee.age_years }}</td>
-                            <td>{{ employee.mobile }}</td>
-                            <td>{{ employee.gender }}</td>
-                            <td>
-                                    <div class="btn-group" role="group">
-                                        <a href="{% url 'delete_emp' employee.id %}" class="btn btn-primary">Delete</a>
-                                    </div>
-                                </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-	
-	
-	
-	
-	<svg
-  xmlns="http://www.w3.org/2000/svg"
-  viewBox="0 0 16 16"
-  width="35"
-  height="35"
-  fill="currentColor"
->
-  <!-- Background circle -->
-  <circle cx="8" cy="8" r="7" fill="#f5f5f5" stroke="#ccc" stroke-width="1" />
+        /* Apply animation to alert container */
+        .alert-container.blinking {
+            animation: blink 1s infinite;
+        }
+	</style>
 
-  <!-- Calendar icon -->
-  <rect x="6" y="4" width="4" height="4" fill="#007bff" />
-  <rect x="5" y="7" width="6" height="1" fill="#007bff" />
-  <rect x="7" y="9" width="2" height="2" fill="#007bff" />
-  <rect x="4" y="11" width="8" height="1" fill="#007bff" />
-</svg>
 
+
+	<div class = "container mt-4">
+
+		<div class = "bg-green-100 alert-container" role = "alert">
+			{% if messages %}
+				{% for message in messages %}
+					<div class = "alert alert-{{ message.tags }}">
+						{{ message }}
+					</div>
+				{% endfor %}
+			{% endif %}
+		</div>
+		
+		<h1 class = "text-center text-xl font-bold mb-4">Employee List</h1>
+		<div class = "table-responsive">
+			<table class = "table table-dark table-hover">
+				<thead>
+				<tr>
+					<th class = "bg-gray-800 text-white">Name</th>
+					<th class = "bg-gray-800 text-white">Username</th>
+					<th class = "bg-gray-800 text-white">Email</th>
+					<th class = "bg-gray-800 text-white">Is Staff</th>
+					<th class = "bg-gray-800 text-white">Is Active</th>
+					<th class = "bg-gray-800 text-white">Department</th>
+					<th class = "bg-gray-800 text-white">Blood Group</th>
+					<th class = "bg-gray-800 text-white">Date of Birth</th>
+					<th class = "bg-gray-800 text-white">Age</th>
+					<th class = "bg-gray-800 text-white">Mobile</th>
+					<th class = "bg-gray-800 text-white">Gender</th>
+					<th class = "bg-gray-800 text-white">Profile</th>
+					<th class = "bg-gray-800 text-white">Delete</th>
+				</tr>
+				</thead>
+				<tbody>
+				{% for employee in employees %}
+					<tr>
+						<td>{{ employee.name }}</td>
+						<td>{{ employee.username }}</td>
+						<td>{{ employee.email }}</td>
+						<td>{{ employee.is_staff }}</td>
+						<td>{{ employee.is_active }}</td>
+						<td>{{ employee.department }}</td>
+						<td>{{ employee.blood_group }}</td>
+						<td>{{ employee.dob }}</td>
+						<td>{{ employee.age_years }}</td>
+						<td>{{ employee.mobile }}</td>
+						<td>{{ employee.gender }}</td>
+						<td>
+							{% if employee.profile_picture %}
+								<img src = "{{ employee.profile_picture.url }}" alt = "Profile Picture"
+										class = "rounded-circle" style = "width: 64px; height: 64px;">
+							{% else %}
+								<div class = "bg-secondary text-white rounded-circle d-flex justify-content-center align-items-center"
+										style = "width: 64px; height: 64px;">
+									<span>No image</span>
+								</div>
+							{% endif %}
+						</td>
+						<td>
+							<div class = "btn-group" role = "group">
+								<a href = "{% url 'delete_emp' employee.id %}" class = "btn btn-primary">Delete</a>
+							</div>
+						</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+	
+	
+	
+	<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const alertContainer = document.querySelector('.alert-container');
+        const alerts = document.querySelectorAll('.alert');
+
+        // Determine number of blinks before stopping
+        const blinkCount = 5;
+        let blinkCounter = 0;
+
+        // Start blinking animation
+        alertContainer.classList.add('blinking');
+
+        // Function to stop blinking after specified blinks
+        function stopBlinking() {
+            alertContainer.classList.remove('blinking'); // Stop blinking
+            alertContainer.style.display = 'none'; // Hide alert container
+        }
+
+        // Increment blink counter after each animation iteration
+        alertContainer.addEventListener('animationiteration', function() {
+            blinkCounter++;
+
+            // Stop blinking after specified number of blinks
+            if (blinkCounter >= blinkCount) {
+                stopBlinking();
+            }
+        });
+
+        // Automatically close after specified time (e.g., 5 blinks)
+        setTimeout(stopBlinking, blinkCount * 1000); // Stop after blinkCount seconds
+    });
+</script>
+
+	
 {% endblock %}

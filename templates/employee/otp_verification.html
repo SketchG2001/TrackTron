@@ -1,0 +1,31 @@
+{% extends 'employee/base.html' %}
+
+{% block title %}
+	OTP
+{% endblock %}
+
+{% block content %}
+	{% if messages %}
+		{% for message in messages %}
+			<div class = "alert alert-danger" role = "alert">
+				{{ message }}
+			</div>
+		{% endfor %}
+	{% endif %}
+	<div class = "flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+	<div class = "sm:mx-auto sm:w-full sm:max-w-md">
+		<h2 class = "mt-10 text-center text-3xl font-bold leading-9 text-white">Enter OTP</h2>
+	</div>
+	<div class = "mt-10 sm:mx-auto sm:w-full sm:max-w-md">
+	<form method = "post" class = "bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+		{% csrf_token %}
+		<div class = "mb-4">
+			<label for = "{{ form.otp.id_for_label }}"
+					class = "block text-gray-700 text-sm font-bold mb-2">{{ form.otp.label }}</label>
+			<input type="text" name="otp" class = "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" autocomplete="off" maxlength="6" required="" id="id_otp">
+		</div>
+		<button type = "submit" class = "btn btn-primary">Verify OTP</button>
+	</form>
+	</div>
+	</div>
+{% endblock %}
