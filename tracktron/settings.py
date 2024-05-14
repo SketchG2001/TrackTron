@@ -88,6 +88,11 @@ EMAIL_USE_TLS = True  # or False depending on your provider
 EMAIL_HOST_USER = 'testingsketch@gmail.com'
 EMAIL_HOST_PASSWORD = 'bplf oskl jrgw joqx'
 
+# settings.py
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://tracktron.azurewebsites.net'
+]
 
 DATABASES = {
     'default': {
