@@ -17,7 +17,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.8'  # Use a supported Python version (e.g., 3.6, 3.7, 3.8, 3.9)
+          python-version: '3.12'  # Use a supported Python version (e.g., 3.6, 3.7, 3.8, 3.9)
 
       - name: Install dependencies
         run: |
@@ -55,4 +55,3 @@ jobs:
           app-name: 'tracktron'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
-
