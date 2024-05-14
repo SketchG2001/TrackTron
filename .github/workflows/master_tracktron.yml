@@ -54,4 +54,4 @@ jobs:
         with:
           app-name: 'tracktron'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
+          publish-profile: ${{ AZURE_CREDENTIALS.AZUREAPPSERVICE_PUBLISHPROFILE }}
