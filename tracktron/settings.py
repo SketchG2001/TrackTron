@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-$f4o$@^e&lcidqe%px-!b#-zv-x1@^^&b$55!(7nh62430z_gn
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['tracktron.azurewebsites.net','20.192.98.161']
 
 
 # Application definition
@@ -96,10 +96,10 @@ DATABASES = {
             'sql_mode': 'traditional',
         },
         'NAME': 'myproj',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',  # Or the hostname of your MySQL server
-        'PORT': '3306',  # Default MySQL port
+        'USER': 'xnaavzkujm',
+        'PASSWORD': 'Vikas@9584',
+        'HOST': 'tracktro-server.mysql.database.azure.com',  # Or the hostname of your MySQL server
+        'PORT': '3306',  
     }
 }
 AUTH_USER_MODEL = 'employee.Employee'
