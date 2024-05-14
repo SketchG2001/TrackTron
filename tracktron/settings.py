@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-$f4o$@^e&lcidqe%px-!b#-zv-x1@^^&b$55!(7nh62430z_gn'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['tracktron.azurewebsites.net','20.192.98.161']
 
